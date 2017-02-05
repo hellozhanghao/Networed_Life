@@ -79,6 +79,9 @@ for user in range(len(R)):
 
 R_hat = np.array(R_hat)
 
+print("R_hat:")
+print(R_hat)
+
 
 # part 2
 R_error = []
@@ -92,8 +95,61 @@ for user in range(len(R)):
 
     R_error.append(R_error_line)
 
-R_error = np.array(R_error)
-print(R_error)
+# R_error = np.array(R_error)
+# print(R_error)
+
+d = []
+
+for movie1 in range(len(R[0])):
+    d_line = []
+    for movie2 in range(len(R[0])):
+        # if False:
+        if movie1 == movie2:
+            d_line.append(0)
+        else:
+            product = 0.0
+            sum1 = 0.0
+            sum2 = 0.0
+            for user in range(len(R)):
+                if R[user][movie1] != -1 and R[user][movie2] != -1:
+                    product += R_error[user][movie1] * R_error[user][movie2]
+                    sum1 += R_error[user][movie1] ** 2
+                    sum2 += R_error[user][movie2] ** 2
+
+            d_line.append(product/(sum1*sum2)**(1.0/2))
+    d.append(d_line)
+
+# d = np.array(d)
+# print("D array:")
+# print(d)
+
+R_hat = []
+
+for user in range(len(R)):
+    R_hat_line = []
+    for movie in range(len(R[user])):
+        neighborhood = []
+        max = dict()
+        for target in range(len(R[user])):
+            if movie != target:
+                max[target] = d[movie][target]
+        max_2 = sorted(max, key=lambda x: abs(max[x]), reverse=True)[:-1]
+
+        for target in max_2:
+            neighborhood.append(d[movie][target] * R_error[user][target] /
+                                (abs(d[movie][max_2[0]]) +
+                                 abs(d[movie][max_2[1]])))
+        R_hat_line.append(r_bar + bu[user] + bi[movie] + neighborhood[0] + neighborhood[1])
+    R_hat.append(R_hat_line)
+
+R_hat = np.array(R_hat)
+print("R_hat:")
+print(R_hat)
+
+
+
+
+
 
 
 
