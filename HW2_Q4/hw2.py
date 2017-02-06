@@ -88,6 +88,7 @@ print(R_hat)
 
 
 # Q2
+print("\n============ Q2 ============")
 R_error = []
 for user in range(len(R)):
     R_error_line = []
@@ -121,6 +122,7 @@ for movie1 in range(len(R[0])):
                     sum2 += R_error[user][movie2] ** 2
 
             d_line.append(product/(sum1*sum2)**(1.0/2))
+            # print(movie1,movie2,product/(sum1*sum2)**(1.0/2))
     d.append(d_line)
 
 # d = np.array(d)
@@ -146,7 +148,6 @@ for user in range(len(R)):
         R_hat_line.append(r_bar + bu[user] + bi[movie] + neighborhood[0] + neighborhood[1])
     R_hat.append(R_hat_line)
 
-print("\n============ Q2 ============")
 R_hat = np.array(R_hat)
 print("R_hat:")
 print(R_hat)
