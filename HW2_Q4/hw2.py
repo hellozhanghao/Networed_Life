@@ -5,6 +5,7 @@ from numpy.linalg import pinv
 
 pp = pprint.PrettyPrinter(indent=1, width=50)
 
+# Q1
 R = np.array([[5, -1, 5, 4],
               [-1, 1, 1, 4],
               [4, 1, 2, 4],
@@ -64,7 +65,10 @@ b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)), A.transpose()),c)
 
 bu = b[:-len(R[0])]
 bi = b[len(R):]
+print("============ Q1 ============")
+print("bu:")
 print(bu)
+print("bi:")
 print(bi)
 
 
@@ -83,7 +87,7 @@ print("R_hat:")
 print(R_hat)
 
 
-# part 2
+# Q2
 R_error = []
 for user in range(len(R)):
     R_error_line = []
@@ -142,10 +146,58 @@ for user in range(len(R)):
         R_hat_line.append(r_bar + bu[user] + bi[movie] + neighborhood[0] + neighborhood[1])
     R_hat.append(R_hat_line)
 
+print("\n============ Q2 ============")
 R_hat = np.array(R_hat)
 print("R_hat:")
 print(R_hat)
 
+import matplotlib.pyplot as plt
+from numpy.linalg import inv
+
+# Q3
+print("\n============ Q3 ============")
+
+A = np.array([[1, 0, 2],
+              [1, 1, 0],
+              [0, 2, 1],
+              [2, 1, 1]])
+c = np.array([[2], [1], [1], [3]])
+AT = A.transpose()
+ATA = np.dot(AT,A)
+ATA_inv = pinv(ATA)
+K = np.dot(AT, c)
+print ('q3(a) b value without Regularization:')
+print (np.dot(ATA_inv,K))
+
+I = np.identity(3)
+lamda = 0
+lamda_lst = []
+b_lst = []
+ab_c_lst = []
+b_norm_lst = []
+while lamda < 5.1:
+    lamda_I = lamda * I
+    ATA_inv = pinv(ATA + lamda_I)
+    b = np.dot(ATA_inv, K)
+    ab_c = np.dot(A, b)-c
+    # ab_c_norm = np.linalg.norm(ab_c,ord=2)
+    # lamda_b_norm = lamda*np.linalg.norm(b,ord=2)
+    ab_c_norm = np.linalg.norm(ab_c,ord = 2)**2
+    lamda_b_norm = np.linalg.norm(b,ord = 2)**2
+    ab_c_lst.append(ab_c_norm)
+    b_norm_lst.append(lamda_b_norm)
+    lamda_lst.append(lamda)
+    b_lst.append(b)
+    lamda += 0.2
+print ('\nq3(a) b value with Regularization:')
+print (b_lst)
+# print (ab_c_lst)
+plt.gca().set_color_cycle(['red',  'blue'])
+plt.plot(lamda_lst,ab_c_lst)
+plt.plot(lamda_lst,b_norm_lst)
+plt.xlabel('lambda')
+plt.legend(['2-norm square of Ab-c', '2-norm square of b'], loc='upper left')
+plt.show()
 
 
 
