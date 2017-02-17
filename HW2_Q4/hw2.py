@@ -100,8 +100,9 @@ for user in range(len(R)):
 
     R_error.append(R_error_line)
 
-# R_error = np.array(R_error)
-# print(R_error)
+print("Error:")
+R_error = np.array(R_error)
+print(R_error)
 
 d = []
 
