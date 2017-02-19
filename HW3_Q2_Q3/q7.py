@@ -17,8 +17,8 @@ w = [0, 0, 0, 0, 1]
 
 start_time = time.time()
 
-# for theta in [0.1, 0.3, 0.5, 0.85]:
-for theta in [0.85]:
+for theta in [0.1, 0.3, 0.5, 0.85]:
+# for theta in [0.85]:
     I = np.identity(N)
     v = np.array([1.0 / N] * 5)
     # pi = np.dot(pinv(I - theta * np.transpose(H)), v.transpose())

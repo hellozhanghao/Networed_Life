@@ -1,3 +1,7 @@
+# Guo Ziqi - 1000905
+# Zhao Juan - 1000918
+# Zhang Hao - 1000899
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pprint
@@ -143,6 +147,7 @@ for user in range(len(R)):
         max_2 = sorted(max, key=lambda x: abs(max[x]), reverse=True)[:-1]
 
         for target in max_2:
+            # print(user,movie,target,R_error[user][target])
             neighborhood.append(d[movie][target] * R_error[user][target] /
                                 (abs(d[movie][max_2[0]]) +
                                  abs(d[movie][max_2[1]])))
@@ -192,7 +197,7 @@ while lamda < 5.1:
     b_lst.append(b)
     lamda += 0.2
 print ('\nq3(a) b value with Regularization:')
-print (b_lst)
+print (np.array(b_lst))
 # print (ab_c_lst)
 plt.gca().set_color_cycle(['red',  'blue'])
 plt.plot(lamda_lst,ab_c_lst)
