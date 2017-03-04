@@ -105,3 +105,36 @@ for t in range(200):
 
 
 # 8.4
+print('\n')
+x = np.array([[0, .7, .5, .9, 0],
+              [.7, 0, 0, 0, .8],
+              [.5, 0, 0, .5, .2],
+              [.9, 0, .5, 0, .3],
+              [0, .8, .2, .3, 0]])
+A = np.array([[1, 1, 1, 1, 1],
+              [1, 1, 1, 1, 1],
+              [1, 1, 1, 1, 1],
+              [1, 1, 1, 1, 1],
+              [1, 1, 1, 1, 1]])
+A = A - x
+N = len(A)
+for i in range(N):
+    A[i][i] += sum(x[i])
+print(A)
+
+C = np.linalg.inv(A)
+print(C)
+
+T = 0
+for i in range(N):
+    T += C[i][i]
+
+R = []
+for i in range(N):
+    R.append(sum(C[i]))
+
+IC = []
+for i in range(N):
+    IC.append(1 / (C[i][i] + (T - 2 * R[i]) / N))
+
+print(IC)
