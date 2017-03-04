@@ -1,3 +1,8 @@
+# Zhao Juan - 1000918
+# Zhang Hao - 1000899
+# Guo Ziqi - 1000905
+
+
 import numpy as np
 from numpy.linalg import pinv
 import time
