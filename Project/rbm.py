@@ -117,7 +117,31 @@ def getPredictedDistribution(v, w, wq):
     #   - Backpropagate these hidden states to obtain
     #       the distribution over the movie whose associated weights are wq
     # ret is a vector of size 5
-    return None
+
+    q = 0
+    for i in range(w.shape[0]):
+        if np.equal(w[i,:,:], wq).all():
+            q = i
+            break
+    # q = np.where(w == wq)[0][0]
+
+
+    # get the weights associated to movies the user has seen
+    weightsForUser = w
+
+    ### LEARNING ###
+    # propagate visible input to hidden units
+    posHiddenProb = visibleToHiddenVec(v, weightsForUser)
+    # get positive gradient
+    # note that we only update the movies that this user has seen!
+
+
+    ### UNLEARNING ###
+    # sample from hidden distribution
+    sampledHidden = sample(posHiddenProb)
+    # propagate back to get "negative data"
+    negData = hiddenToVisible(sampledHidden, weightsForUser)
+    return negData[q,:]
 
 
 def predictRatingMax(ratingDistribution):
@@ -127,7 +151,14 @@ def predictRatingMax(ratingDistribution):
     # This function is one of two you are to implement
     # that returns a rating from the distribution
     # We decide here that the predicted rating will be the one with the highest probability
-    return None
+    max = np.max(ratingDistribution)
+    n=0
+    for i in range(5):
+        if ratingDistribution[i]==max:
+            n=i
+            break
+    return n+1
+
 
 
 def predictRatingExp(ratingDistribution):
@@ -137,7 +168,9 @@ def predictRatingExp(ratingDistribution):
     # This function is one of two you are to implement
     # that returns a rating from the distribution
     # We decide here that the predicted rating will be the expectation of the ratingDistribution
-    return None
+    rating = np.array([1,2,3,4,5])
+    n = np.dot(rating, ratingDistribution)
+    return n
 
 
 def predictMovieForUser(q, user, W, training, predictType="exp"):
@@ -146,7 +179,7 @@ def predictMovieForUser(q, user, W, training, predictType="exp"):
     # type can be "max" or "exp"
     ratingsForUser = lib.getRatingsForUser(user, training)
     v = getV(ratingsForUser)
-    ratingDistribution = getPredictedDistribution(v, W[ratingsForUser[:, 0], :, :], W[q, :, :])
+    ratingDistribution = getPredictedDistribution(v, W[ratingsForUser[:, 0], :, :], W[q,:,:]) #changed from w[q,:,:] to q
     if predictType == "max":
         return predictRatingMax(ratingDistribution)
     else:

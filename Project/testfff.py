@@ -15,3 +15,10 @@ print(rbm.visibleToHiddenVec(v,w))
 h = rbm.visibleToHiddenVec(v,w)
 print(rbm.hiddenToVisible(h,w))
 print(np.sum(rbm.hiddenToVisible(h,w)))
+
+for (i,j) in zip([1,2,3],[4,5,6]):
+    print(i,j)
+
+a = np.array([1,2])
+b = np.array([1,2])
+print(np.equal(a,b).all())

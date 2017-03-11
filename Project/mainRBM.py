@@ -14,9 +14,9 @@ K = 5
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-F = 3
-epochs = 100
-gradientLearningRate = 0.1
+F = 10
+epochs = 1000
+gradientLearningRate = 0.01
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)
@@ -64,19 +64,19 @@ for epoch in range(1, epochs):
     # Print the current RMSE for training and validation sets
     # this allows you to control for overfitting e.g
     # We predict over the training set
-    tr_r_hat = rbm.predict(trStats["movies"], trStats["users"], W, training)
+    tr_r_hat = rbm.predict(trStats["movies"], trStats["users"], W, training, 'max')
     trRMSE = lib.rmse(trStats["ratings"], tr_r_hat)
 
     # We predict over the validation set
-    vl_r_hat = rbm.predict(vlStats["movies"], vlStats["users"], W, training)
+    vl_r_hat = rbm.predict(vlStats["movies"], vlStats["users"], W, training, 'max')
     vlRMSE = lib.rmse(vlStats["ratings"], vl_r_hat)
 
-    print ("### EPOCH %d ###" % epoch)
-    print ("Training loss = %f" % trRMSE)
-    print ("Validation loss = %f" % vlRMSE)
+    print("### EPOCH %d ###" % epoch)
+    print("Training loss = %f" % trRMSE)
+    print("Validation loss = %f" % vlRMSE)
 
 ### END ###
 # This part you can write on your own
 # you could plot the evolution of the training and validation RMSEs for example
-predictedRatings = np.array([rbm.predictForUser(user, W, training) for user in trStats["u_users"]])
-np.savetxt("predictedRatings.txt", predictedRatings)
+# predictedRatings = np.array([rbm.predictForUser(user, W, training) for user in trStats["u_users"]])
+# np.savetxt("predictedRatings.txt", predictedRatings)
