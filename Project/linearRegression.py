@@ -53,5 +53,5 @@ def predict(movies, users, rBar, b):
 l = 1
 b = param_reg(A, c, l)
 
-print "Linear regression, l = %f" % l
-print lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"])
+print ("Linear regression, l = %f" % l)
+print (lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"]))

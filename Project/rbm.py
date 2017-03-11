@@ -4,15 +4,18 @@ import projectLib as lib
 # set highest rating
 K = 5
 
+
 def softmax(x):
     # Numerically stable softmax function
     e_x = np.exp(x - np.max(x))
     return e_x / e_x.sum()
 
+
 def ratingsPerMovie(training):
     movies = [x[0] for x in training]
     u_movies = np.unique(movies).tolist()
     return np.array([[i, movie, len([x for x in training if x[0] == movie])] for i, movie in enumerate(u_movies)])
+
 
 def getV(ratingsForUser):
     # ratingsForUser is obtained from the ratings for user library
@@ -22,8 +25,9 @@ def getV(ratingsForUser):
     #   otherwise it is 0
     ret = np.zeros((len(ratingsForUser), K))
     for i in range(len(ratingsForUser)):
-        ret[i, ratingsForUser[i, 1]-1] = 1.0
+        ret[i, ratingsForUser[i, 1] - 1] = 1.0
     return ret
+
 
 def getInitialWeights(m, F, K):
     # m is the number of visible units
@@ -31,12 +35,14 @@ def getInitialWeights(m, F, K):
     # K is the highest rating (fixed to 5 here)
     return np.random.normal(0, 0.1, (m, F, K))
 
+
 def sig(x):
-    sig = 1/(1 + np.exp(-x))
+    sig = 1 / (1 + np.exp(-x))
     ### TO IMPLEMENT ###
     # x is a real vector of size n
     # ret should be a vector of size n where ret_i = sigmoid(x_i)
     return sig
+
 
 def visibleToHiddenVec(v, w):
     ### TO IMPLEMENT ###
@@ -44,7 +50,15 @@ def visibleToHiddenVec(v, w):
     #    OR a probability distribution over the rating
     # w is a list of matrices of size m x F x 5
     # ret should be a vector of size F
-    return None
+
+    sum = np.zeros(w.shape[1])
+    for k in range(v.shape[1]):
+        W_k = w[:, :, k]
+        V_k = v[:, k]
+        sum += np.dot(W_k.transpose(), V_k)
+
+    return sum
+
 
 def hiddenToVisible(h, w):
     ### TO IMPLEMENT ###
@@ -58,6 +72,7 @@ def hiddenToVisible(h, w):
     #   We only do so when we predict the rating a user would have given to a movie.
     return None
 
+
 def probProduct(v, p):
     # v is a matrix of size m x 5
     # p is a vector of size F, activation of the hidden units
@@ -69,6 +84,7 @@ def probProduct(v, p):
                 ret[i, j, k] = v[i, k] * p[j]
     return ret
 
+
 def sample(p):
     # p is a vector of real numbers between 0 and 1
     # ret is a vector of same size as p, where ret_i = Ber(p_i)
@@ -76,6 +92,7 @@ def sample(p):
     # parameter p_i to obtain ret_i
     samples = np.random.random(p.size)
     return np.array(samples <= p, dtype=int)
+
 
 def getPredictedDistribution(v, w, wq):
     ### TO IMPLEMENT ###
@@ -94,6 +111,7 @@ def getPredictedDistribution(v, w, wq):
     # ret is a vector of size 5
     return None
 
+
 def predictRatingMax(ratingDistribution):
     ### TO IMPLEMENT ###
     # ratingDistribution is a probability distribution over possible ratings
@@ -103,6 +121,7 @@ def predictRatingMax(ratingDistribution):
     # We decide here that the predicted rating will be the one with the highest probability
     return None
 
+
 def predictRatingExp(ratingDistribution):
     ### TO IMPLEMENT ###
     # ratingDistribution is a probability distribution over possible ratings
@@ -111,6 +130,7 @@ def predictRatingExp(ratingDistribution):
     # that returns a rating from the distribution
     # We decide here that the predicted rating will be the expectation of the ratingDistribution
     return None
+
 
 def predictMovieForUser(q, user, W, training, predictType="exp"):
     # movie is movie idx
@@ -124,15 +144,16 @@ def predictMovieForUser(q, user, W, training, predictType="exp"):
     else:
         return predictRatingExp(ratingDistribution)
 
+
 def predict(movies, users, W, training, predictType="exp"):
     # given a list of movies and users, predict the rating for each (movie, user) pair
     # used to compute RMSE
-    return [predictMovieForUser(movie, user, W, training, predictType=predictType) for (movie, user) in zip(movies, users)]
+    return [predictMovieForUser(movie, user, W, training, predictType=predictType) for (movie, user) in
+            zip(movies, users)]
+
 
 def predictForUser(user, W, training, predictType="exp"):
     ### TO IMPLEMENT
     # given a user ID, predicts all movie ratings for the user
     return None
 
-x = np.array([1,2,3])
-print sig(x)
