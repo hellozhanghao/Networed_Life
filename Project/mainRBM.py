@@ -14,9 +14,9 @@ K = 5
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-# F =
-# epochs =
-# gradientLearningRate =
+F = 3
+epochs = 100
+gradientLearningRate = 0.1
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)

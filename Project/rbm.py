@@ -50,6 +50,8 @@ def visibleToHiddenVec(v, w):
     #    OR a probability distribution over the rating
     # w is a list of matrices of size m x F x 5
     # ret should be a vector of size F
+    # v = np.array(v)
+    # w = np.array(w)
 
     sum = np.zeros(w.shape[1])
     for k in range(v.shape[1]):
@@ -74,13 +76,15 @@ def hiddenToVisible(h, w):
     for i in range(w.shape[0]):
         td = np.tensordot(h,w[i, :, :], axes=1)
         v.append(softmax(td))
-    return v
+    return np.array(v)
 
 
 def probProduct(v, p):
     # v is a matrix of size m x 5
     # p is a vector of size F, activation of the hidden units
     # returns the gradient for visible input v and hidden activations p
+
+
     ret = np.zeros((v.shape[0], p.size, v.shape[1]))
     for i in range(v.shape[0]):
         for j in range(p.size):
