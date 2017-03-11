@@ -57,7 +57,7 @@ def visibleToHiddenVec(v, w):
         V_k = v[:, k]
         sum += np.dot(W_k.transpose(), V_k)
 
-    return sum
+    return sig(sum)
 
 
 def hiddenToVisible(h, w):
@@ -70,7 +70,11 @@ def hiddenToVisible(h, w):
     #   has not rated! (where reconstructing means getting a distribution
     #   over possible ratings).
     #   We only do so when we predict the rating a user would have given to a movie.
-    return None
+    v = []
+    for i in range(w.shape[0]):
+        td = np.tensordot(h,w[i, :, :], axes=1)
+        v.append(softmax(td))
+    return v
 
 
 def probProduct(v, p):
@@ -156,4 +160,3 @@ def predictForUser(user, W, training, predictType="exp"):
     ### TO IMPLEMENT
     # given a user ID, predicts all movie ratings for the user
     return None
-
