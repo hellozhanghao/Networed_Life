@@ -32,10 +32,11 @@ def getInitialWeights(m, F, K):
     return np.random.normal(0, 0.1, (m, F, K))
 
 def sig(x):
+    sig = 1/(1 + np.exp(-x))
     ### TO IMPLEMENT ###
     # x is a real vector of size n
     # ret should be a vector of size n where ret_i = sigmoid(x_i)
-    return None
+    return sig
 
 def visibleToHiddenVec(v, w):
     ### TO IMPLEMENT ###
@@ -132,3 +133,6 @@ def predictForUser(user, W, training, predictType="exp"):
     ### TO IMPLEMENT
     # given a user ID, predicts all movie ratings for the user
     return None
+
+x = np.array([1,2,3])
+print sig(x)
