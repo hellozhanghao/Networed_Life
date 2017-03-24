@@ -31,6 +31,7 @@ A = [[0, 1, 1, 1, 0],
 # closeness 0.8,0.2,0.8,0.8,0.8
 
 # eigenvector centrality
+
 eig_value = np.linalg.eig(A)[0]
 eig_value = np.abs(eig_value)
 print(eig_value)
