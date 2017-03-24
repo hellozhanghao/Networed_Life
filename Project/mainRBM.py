@@ -14,9 +14,9 @@ K = 5
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-F = 10
-epochs = 1000
-gradientLearningRate = 0.01
+F = 5
+epochs = 5
+gradientLearningRate = 0.5
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)
@@ -64,11 +64,11 @@ for epoch in range(1, epochs):
     # Print the current RMSE for training and validation sets
     # this allows you to control for overfitting e.g
     # We predict over the training set
-    tr_r_hat = rbm.predict(trStats["movies"], trStats["users"], W, training, 'max')
+    tr_r_hat = rbm.predict(trStats["movies"], trStats["users"], W, training)
     trRMSE = lib.rmse(trStats["ratings"], tr_r_hat)
 
     # We predict over the validation set
-    vl_r_hat = rbm.predict(vlStats["movies"], vlStats["users"], W, training, 'max')
+    vl_r_hat = rbm.predict(vlStats["movies"], vlStats["users"], W, training)
     vlRMSE = lib.rmse(vlStats["ratings"], vl_r_hat)
 
     print("### EPOCH %d ###" % epoch)
