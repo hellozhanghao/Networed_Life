@@ -15,8 +15,9 @@ K = 5
 # SET PARAMETERS HERE!!!
 # number of hidden units
 F = 5
-epochs = 5
-gradientLearningRate = 0.5
+epochs = 20
+gradientLearningRate = 0.1
+B = 10
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)
@@ -26,7 +27,9 @@ negprods = np.zeros(W.shape)
 for epoch in range(1, epochs):
     # in each epoch, we'll visit all users in a random order
     visitingOrder = np.array(trStats["u_users"])
-    np.random.shuffle(visitingOrder)
+    # np.random.shuffle(visitingOrder)
+    visitingOrder = np.random.choice(visitingOrder,B,replace=False)
+    print(visitingOrder)
 
     for user in visitingOrder:
         # get the ratings of that user
@@ -55,10 +58,8 @@ for epoch in range(1, epochs):
         # get negative gradient
         # note that we only update the movies that this user has seen!
         negprods[ratingsForUser[:, 0], :, :] += rbm.probProduct(negData, negHiddenProb)
-
         # we average over the number of users
         grad = gradientLearningRate * (posprods - negprods) / trStats["n_users"]
-
         W += grad
 
     # Print the current RMSE for training and validation sets

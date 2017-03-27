@@ -123,7 +123,6 @@ def getPredictedDistribution(v, w, wq):
         if np.equal(w[i,:,:], wq).all():
             q = i
             break
-    # q = np.where(w == wq)[0][0]
 
 
     # get the weights associated to movies the user has seen
