@@ -12,12 +12,22 @@ rBar = np.mean(trStats["ratings"])
 def getA(training):
     A = np.zeros((trStats["n_ratings"], trStats["n_movies"] + trStats["n_users"]))
     # ???
+    for i in range(trStats["n_ratings"]) :
+        x=training[i]
+        movieId = x[0]
+        userId =x[1]
+        userIndex = trStats["n_movies"]+userId
+        A[i][movieId]=1.0
+        A[i][userIndex]=1
     return A
 
 # we also get c
 def getc(rBar, ratings):
     # ???
-    return None
+    c = np.zeros(trStats["n_ratings"])
+    for i in range(trStats["n_ratings"]):
+        c[i]=ratings[i]-rBar
+    return c
 
 # apply the functions
 A = getA(training)
@@ -26,14 +36,16 @@ c = getc(rBar, trStats["ratings"])
 # compute the estimator b
 def param(A, c):
     # ???
-    return None
+    b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)), A.transpose()),c)
+    return b
 
 # compute the estimator b with a regularisation parameter l
 # note: lambda is a Python keyword to define inline functions
 #       so avoid using it as a variable name!
 def param_reg(A, c, l):
     # ???
-    return None
+    b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)+l*np.identity(A.shape[0])), A.transpose()),c)
+    return b
 
 # from b predict the ratings for the (movies, users) pair
 def predict(movies, users, rBar, b):
