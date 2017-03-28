@@ -14,39 +14,53 @@ K = 5
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-F = 5
+F = 8
 epochs = 20
-gradientLearningRate = 0.1
+gradientLearningRate = 0.003
 B = 10
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)
+
 posprods = np.zeros(W.shape)
 negprods = np.zeros(W.shape)
+grad = np.zeros(W.shape)
+
+hiddenBiases = np.zeros([1,W.shape[1]])
+visibleBiases = np.zeros([1,W.shape[0]])
+hiddenBiasGrad = np.zeros([1,W.shape[1]])
+visibleBiasGrad = np.zeros([1,W.shape[0]])
+
+poshidact = np.zeros([1,W.shape[1]])
+neghidact = np.zeros([1,W.shape[1]])
+posvisact = np.zeros([1,W.shape[0]])
+negvisact = np.zeros([1,W.shape[0]])
+
 
 for epoch in range(1, epochs):
     # in each epoch, we'll visit all users in a random order
     visitingOrder = np.array(trStats["u_users"])
-    # np.random.shuffle(visitingOrder)
-    visitingOrder = np.random.choice(visitingOrder,B,replace=False)
-    print(visitingOrder)
+    np.random.shuffle(visitingOrder)
+    # visitingOrder = np.random.choice(visitingOrder,B,replace=False)
+    # print(visitingOrder)
 
     for user in visitingOrder:
         # get the ratings of that user
         ratingsForUser = lib.getRatingsForUser(user, training)
-
         # build the visible input
         v = rbm.getV(ratingsForUser)
-
         # get the weights associated to movies the user has seen
         weightsForUser = W[ratingsForUser[:, 0], :, :]
-
         ### LEARNING ###
         # propagate visible input to hidden units
         posHiddenProb = rbm.visibleToHiddenVec(v, weightsForUser)
         # get positive gradient
         # note that we only update the movies that this user has seen!
         posprods[ratingsForUser[:, 0], :, :] += rbm.probProduct(v, posHiddenProb)
+        # poshidact = posHiddenProb.transpose()
+        # posvisact = np.sum(v,axis=0)
+        
+
 
         ### UNLEARNING ###
         # sample from hidden distribution
@@ -58,9 +72,16 @@ for epoch in range(1, epochs):
         # get negative gradient
         # note that we only update the movies that this user has seen!
         negprods[ratingsForUser[:, 0], :, :] += rbm.probProduct(negData, negHiddenProb)
+        # neghidact = negHiddenProb.transpose()
+        # negvisact = np.sum(negData,axis=0)
         # we average over the number of users
-        grad = gradientLearningRate * (posprods - negprods) / trStats["n_users"]
+        grad = gradientLearningRate * (posprods - negprods) / trStats['n_users']
+        # hiddenBiasGrad = gradientLearningRate * (poshidact - neghidact) / trStats["n_users"]
+        # visibleBiasGrad = gradientLearningRate * (posvisact - negvisact) / trStats["n_users"]
         W += grad
+
+        # hiddenBiases += hiddenBiasGrad
+        # visibleBiases += visibleBiasGrad
 
     # Print the current RMSE for training and validation sets
     # this allows you to control for overfitting e.g

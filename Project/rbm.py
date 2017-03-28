@@ -118,11 +118,11 @@ def getPredictedDistribution(v, w, wq):
     #       the distribution over the movie whose associated weights are wq
     # ret is a vector of size 5
 
-    q = 0
-    for i in range(w.shape[0]):
-        if np.equal(w[i,:,:], wq).all():
-            q = i
-            break
+    # q = 0
+    # for i in range(w.shape[0]):
+    #     if np.equal(w[i,:,:], wq).all():
+    #         q = i
+    #         break
 
 
     # get the weights associated to movies the user has seen
@@ -138,9 +138,12 @@ def getPredictedDistribution(v, w, wq):
     ### UNLEARNING ###
     # sample from hidden distribution
     sampledHidden = sample(posHiddenProb)
+    ww = np.array([wq])
     # propagate back to get "negative data"
-    negData = hiddenToVisible(sampledHidden, weightsForUser)
-    return negData[q,:]
+    # negData = hiddenToVisible(sampledHidden, weightsForUser)
+    negData = hiddenToVisible(sampledHidden,ww)
+    # return negData[q,:]
+    return negData[0]
 
 
 def predictRatingMax(ratingDistribution):
@@ -150,10 +153,10 @@ def predictRatingMax(ratingDistribution):
     # This function is one of two you are to implement
     # that returns a rating from the distribution
     # We decide here that the predicted rating will be the one with the highest probability
-    max = np.max(ratingDistribution)
+    maxx = np.max(ratingDistribution)
     n=0
     for i in range(5):
-        if ratingDistribution[i]==max:
+        if ratingDistribution[i]==maxx:
             n=i
             break
     return n+1
