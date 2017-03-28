@@ -1,6 +1,6 @@
 import numpy as np
 import projectLib as lib
-
+from numpy.linalg import pinv
 # shape is movie,user,rating
 training = lib.getTrainingData()
 
@@ -44,7 +44,7 @@ def param(A, c):
 #       so avoid using it as a variable name!
 def param_reg(A, c, l):
     # ???
-    b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)+l*np.identity(A.shape[0])), A.transpose()),c)
+    b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)-l*np.identity(A.shape[1])), A.transpose()),c)
     return b
 
 # from b predict the ratings for the (movies, users) pair
@@ -59,11 +59,12 @@ def predict(movies, users, rBar, b):
     return p
 
 # Unregularised version
-# b = param(A, c)
+#b = param(A, c)
 
 # Regularised version
-l = 1
-b = param_reg(A, c, l)
+for i in range(10):
+    l = i*0.1
+    b = param_reg(A, c, l)
 
-print ("Linear regression, l = %f" % l)
-print (lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"]))
+    print ("Linear regression, l = %f" % l)
+    print (lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"]))
