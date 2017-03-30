@@ -20,6 +20,7 @@ epochs = 20
 epsilon = 0.01
 B = 10
 weightcost = 0.0004
+momentum = 0.4
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)
@@ -82,7 +83,7 @@ for epoch in range(1, epochs):
             # we average over the number of users
             gradientLearningRate = epsilon / epoch
             # print(gradientLearningRate)
-            grad = gradientLearningRate * ((posprods - negprods) / trStats['n_users'] - weightcost * np.linalg.norm(temp))
+            grad = momentum * grad + (1-momentum) * gradientLearningRate * ((posprods - negprods) / trStats['n_users'] - weightcost * np.linalg.norm(temp))
             # hiddenBiasGrad = gradientLearningRate * (poshidact - neghidact) / trStats["n_users"]
             # visibleBiasGrad = gradientLearningRate * (posvisact - negvisact) / trStats["n_users"]
             temp += grad
@@ -110,6 +111,7 @@ for epoch in range(1, epochs):
     print("Validation loss = %f" % vlRMSE)
 
 np.save('best_weight.npy', bestW)
+print(bestRMSE)
 ### END ###
 # This part you can write on your own
 # you could plot the evolution of the training and validation RMSEs for example
