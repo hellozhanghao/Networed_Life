@@ -22,3 +22,6 @@ for (i,j) in zip([1,2,3],[4,5,6]):
 a = np.array([1,2])
 b = np.array([1,2])
 print(np.equal(a,b).all())
+
+lst = range(50)
+print(np.array_split(lst,4))
