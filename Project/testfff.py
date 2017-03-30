@@ -25,3 +25,5 @@ print(np.equal(a,b).all())
 
 lst = range(50)
 print(np.array_split(lst,4))
+
+print(np.load('best_weight.npy').shape)

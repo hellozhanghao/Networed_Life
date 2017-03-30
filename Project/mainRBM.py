@@ -1,6 +1,7 @@
 import numpy as np
 import rbm
 import projectLib as lib
+import pickle
 
 training = lib.getTrainingData()
 validation = lib.getValidationData()
@@ -16,7 +17,7 @@ K = 5
 # number of hidden units
 F = 8
 epochs = 20
-gradientLearningRate = 0.003
+epsilon = 0.01
 B = 10
 
 # Initialise all our arrays
@@ -36,6 +37,9 @@ neghidact = np.zeros([1,W.shape[1]])
 posvisact = np.zeros([1,W.shape[0]])
 negvisact = np.zeros([1,W.shape[0]])
 
+bestW = np.zeros(W.shape)
+bestRMSE = 100
+
 for epoch in range(1, epochs):
     # in each epoch, we'll visit all users in a random order
     visitingOrder = np.array(trStats["u_users"])
@@ -43,7 +47,7 @@ for epoch in range(1, epochs):
     visitingOrder = np.array_split(visitingOrder, visitingOrder.shape[0] / B)
     # print(visitingOrder)
     for batch in visitingOrder:
-        print(batch)
+        # print(batch)
         temp = np.zeros(W.shape)
         for user in batch:
             # get the ratings of that user
@@ -75,6 +79,8 @@ for epoch in range(1, epochs):
             # neghidact = negHiddenProb.transpose()
             # negvisact = np.sum(negData,axis=0)
             # we average over the number of users
+            gradientLearningRate = epsilon / epoch
+            # print(gradientLearningRate)
             grad = gradientLearningRate * (posprods - negprods) / trStats['n_users']
             # hiddenBiasGrad = gradientLearningRate * (poshidact - neghidact) / trStats["n_users"]
             # visibleBiasGrad = gradientLearningRate * (posvisact - negvisact) / trStats["n_users"]
@@ -93,10 +99,16 @@ for epoch in range(1, epochs):
     vl_r_hat = rbm.predict(vlStats["movies"], vlStats["users"], W, training)
     vlRMSE = lib.rmse(vlStats["ratings"], vl_r_hat)
 
+    if vlRMSE < bestRMSE:
+        bestRMSE = vlRMSE
+        bestW = W
+
     print("### EPOCH %d ###" % epoch)
+    print("Learning rate = %f" % gradientLearningRate)
     print("Training loss = %f" % trRMSE)
     print("Validation loss = %f" % vlRMSE)
 
+np.save('best_weight.npy', bestW)
 ### END ###
 # This part you can write on your own
 # you could plot the evolution of the training and validation RMSEs for example
