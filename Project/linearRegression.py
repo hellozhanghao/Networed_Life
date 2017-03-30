@@ -3,9 +3,13 @@ import projectLib as lib
 from numpy.linalg import pinv
 # shape is movie,user,rating
 training = lib.getTrainingData()
+validation = lib.getValidationData()
+
 
 #some useful stats
 trStats = lib.getUsefulStats(training)
+vlStats = lib.getUsefulStats(validation)
+
 rBar = np.mean(trStats["ratings"])
 
 # we get the A matrix from the training dataset
@@ -63,8 +67,12 @@ def predict(movies, users, rBar, b):
 
 # Regularised version
 for i in range(10):
-    l = i*0.1
+    l = i*0.06
     b = param_reg(A, c, l)
 
-    print ("Linear regression, l = %f" % l)
-    print (lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"]))
+    trRMSE = lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"])
+    vlRMSE = lib.rmse(predict(vlStats["movies"], vlStats["users"], rBar, b), vlStats["ratings"])
+
+    print("Linear regression, l = %f" % l)
+    print("Training loss = %f" % trRMSE)
+    print("Validation loss = %f\n" % vlRMSE)

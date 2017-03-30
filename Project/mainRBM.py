@@ -19,6 +19,7 @@ F = 8
 epochs = 20
 epsilon = 0.01
 B = 10
+weightcost = 0.0004
 
 # Initialise all our arrays
 W = rbm.getInitialWeights(trStats["n_movies"], F, K)
@@ -81,7 +82,7 @@ for epoch in range(1, epochs):
             # we average over the number of users
             gradientLearningRate = epsilon / epoch
             # print(gradientLearningRate)
-            grad = gradientLearningRate * (posprods - negprods) / trStats['n_users']
+            grad = gradientLearningRate * ((posprods - negprods) / trStats['n_users'] - weightcost * np.linalg.norm(temp))
             # hiddenBiasGrad = gradientLearningRate * (poshidact - neghidact) / trStats["n_users"]
             # visibleBiasGrad = gradientLearningRate * (posvisact - negvisact) / trStats["n_users"]
             temp += grad
