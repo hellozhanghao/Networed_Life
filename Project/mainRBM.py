@@ -14,6 +14,7 @@ vlStats = lib.getUsefulStats(validation)
 K = 5
 
 mode = 'batch'
+# mode = 'single'
 
 def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
     # Initialise all our arrays
@@ -120,29 +121,33 @@ def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
 # SET PARAMETERS HERE!!!
 # number of hidden units
 F = 8
-epochs = 10
+epochs = 5
 epsilon = 0.01
 B = 10
 weightcost = 0.0004
 momentum = 0.4
 
 range_F = range(1, 20)
-epochs = 10
 range_Epsilon = [0.01, 0.02, 0.03, 0.04]
 range_B = range(10, 200, 10)
 range_weightcost = [0.0001, 0.0002, 0.0003, 0.0004]
 range_momentum = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7]
 
+
 f = open("log.csv", 'w')
 f.write("F, epochs, epsilon, B, weightcost, momentum, trRSME, vlRSME\n")
 
 if mode == 'batch':
+
+    total = len(range_F) * len(range_Epsilon) * len(range_B) * len(range_weightcost) * len(range_momentum)
+    count = 0
     for F in range_F:
         for epsilon in range_Epsilon:
             for B in range_B:
                 for weightcost in range_weightcost:
                     for momentum in range_momentum:
-                        print("================")
+                        count += 1
+                        print("====== ", round(count/float(total/100),2),"% =====")
                         print("F:        ",F)
                         print("epsilon:  ",epsilon)
                         print("B:        ", B)
