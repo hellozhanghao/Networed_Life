@@ -196,10 +196,13 @@ def predict(movies, users, W, training, predictType="exp"):
 
 
 def predictForUser(user, W, training, predictType="exp"):
+
+    trStats = lib.getUsefulStats(training)
+    # print(trStats["u_movies"])
+
+
+    return [predictMovieForUser(movie, user, W, training, predictType) for movie in trStats["u_movies"]]
+
     ### TO IMPLEMENT
     # given a user ID, predicts all movie ratings for the user
 
-
-
-
-    return None
