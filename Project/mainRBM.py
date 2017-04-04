@@ -120,18 +120,18 @@ def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-F = 30
-epochs = 3
-epsilon = 0.00001
-B = 20
+F = 58
+epochs = 50
+epsilon = 0.01
+B = 5
 weightcost = 0.0004
-momentum = 0
+momentum = 0.5
 
-range_F = [3,5,8]
-range_Epsilon = [0.01,0.1]
-range_B = [5,10,20]
+range_F = range(2,100,8)
+range_Epsilon = [0.01,0.0001]
+range_B = [5,10,20,25,50]
 range_weightcost = [0.0004]
-range_momentum = [0.5]
+range_momentum = [0.2,0.5,0.8]
 
 
 f = open("log.csv", 'w')
