@@ -48,7 +48,7 @@ def param(A, c):
 #       so avoid using it as a variable name!
 def param_reg(A, c, l):
     # ???
-    b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)-l*np.identity(A.shape[1])), A.transpose()),c)
+    b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)+l*np.identity(A.shape[1])), A.transpose()),c)
     return b
 
 # from b predict the ratings for the (movies, users) pair
@@ -66,8 +66,8 @@ def predict(movies, users, rBar, b):
 #b = param(A, c)
 
 # Regularised version
-for i in range(10):
-    l = i*0.06
+for i in range(11):
+    l = i*0.0001
     b = param_reg(A, c, l)
 
     trRMSE = lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"])
