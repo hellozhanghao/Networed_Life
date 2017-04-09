@@ -1,0 +1,103 @@
+\documentclass[12pt]{article}
+\pagestyle{empty}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{amsmath}
+%\usepackage{cyrillic}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{bm}
+\usepackage{tikz}
+
+\thispagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\bf Networked Life: Homework 6
+\medskip\\
+Guo Ziqi - 1000905\\
+Zhao Juan - 1000918\\
+Zhang Hao - 1000899
+\end{center}
+
+\begin{enumerate}
+
+\item{} \textbf{Answer:}\\
+\begin{table}[ht]
+\caption{Steps of the Bellman-Ford Algorithm}
+\centering
+\begin{tabular}{c c c c c c}
+\hline\hline
+t & d6 & d5 & d4 & d3 & d2 & d1\\ [0.5ex]
+t=0 & 0 & 0 & 0 & 0 & 0 & 0\\
+t=1 &  & (2) 9.25 &  & (6) 13.65 & &\\
+t=2 &  &  & (4) 9.75$\rightarrow$11.25 & (7) 13.9 & &\\
+t=3 & 7.25 & 9.75 & 11.5 & 14.15 & 27.7 &\\
+\hline
+\end{tabular}
+\label{table: running time}
+\end{table}\\
+
+\item{} \textbf{Answer:}
+
+According to the bidding progression, bidder 1 wins the bid and pays \$27.45.
+
+\item{} \textbf{Answer:}
+\begin{itemize}
+\item[(a)] If $b_1>b_2$, Alice wins the slot with clickthrough rate of 500 per hour. Her payoff is $\$(r-b_2)$ per click, or equivalently, $\$500(r-b_2)$ per hour.
+\medskip\\
+If $b_1<b_2$, Alice wins the slot with clickthrough rate of 300 per hour. Alice's payoff is then $\$r$ per click, or equivalently, $\$300r$ per hour.
+\item[(b)] From the payoffs above, we can equate the two payoffs and find out that when $2/5r>b_2$, getting the first slot will yield higher payoff for Alice; otherwise, getting the second slot will yield higher payoff for Alice. Therefore, the dominant strategy for Alice is to bid $2/5r$, so that in both cases Alice can always maximize her payoff. 
+\end{itemize}
+
+\item{} \textbf{Answer:}
+\begin{itemize}
+\item[(a)] The only scenario that will yield a positive payoff for Bidder 1 is that he wins both seats. However, assuming Bidder 2 is rational, he will always have the choice to give up one seat and bid $\$10$ on the other one. So with a $\$15$ total valuation of the two seats, Bidder 1 would never be able to win both seats.
+\medskip\\
+In this case, getting only one seat will yield a negative payoff for Bidder 1, as a single seat is worth nothing to him. As the best scenario results in a payoff of $\$0$, not bidding on any of the seats is the dominant strategy for Bidder 1.
+\item[(b)] In this case, Bidder 1 just needs to always bid on the package consisting of both seats. Regardless of whether Bidder 2 bids on individual seats or package, Bidder 1 just needs to top Bidder 2's total bid by minimum increment.
+\medskip\\
+Therefore, Bidder 1 instead can win the bid if package bidding is used. The price charged is $\$(12+m)$ at most, assuming $m$ is the minimum increment to top a previous bid. His payoff is $\$(3-m)$.
+\end{itemize}
+
+\item{} \textbf{Answer:}
+\medskip\\
+The price charged to the winners Bidder 1 and 4 are represented by $p_1$ and $p_4$:
+$$M*={(1,1),(4,2)}$$
+$$V*=10+9=19$$
+$$p_1=(7+8)-9=6$$
+$$p_4=(10+8)-10=8$$
+
+\item{} \textbf{Answer:}
+\medskip\\
+Vector $\pi[k]$ will exhibit periodic behavior as $k$ becomes large. In particular, $\pi[0]=[1/2,1/2,0,0]^T, \pi[1]=[1/2,0,0,1/2]^T,\pi[2]=[0,0,1/2,1/2]^T,\pi[3]=[0,1/2,1/2,0]^T$, and then the pattern repeats itself.
+\medskip\\
+Therefore, there is no solution for steady-state probabilities $\pi^*$ such that $\pi^{*T}=\pi^{*T}H$.
+
+\item{} \textbf{Answer:}
+\medskip\\
+When $\theta=0.1$, $\pi_1=0.211, \pi_2=0.205, \pi_3=0.200, \pi_4=0.193, \pi_5=0.190$;\\
+When $\theta=0.3$, $\pi_1=0.236, \pi_2=0.221, \pi_3=0.196, \pi_4=0.177, \pi_5=0.170$;\\
+When $\theta=0.5$, $\pi_1=0.270, \pi_2=0.249, \pi_3=0.183, \pi_4=0.153, \pi_5=0.145$;\\
+When $\theta=0.85$, $\pi_1=0.385, \pi_2=0.369, \pi_3=0.102, \pi_4=0.073, \pi_5=0.071$;
+\medskip\\
+As $\theta$ increases, the difference of probabilities grows larger. It is more and more obvious that $\pi_1$ and $\pi_2$ have larger significance. This trend is because $\theta$ indicates how much we value the original distribution of transition probabilities. So as $\theta$ becomes larger, the probabilities at equilibrium are mostly determined by the structural connectivity of the graphs.
+
+\item{} \textbf{Answer:}
+\begin{itemize}
+\item[(a)] $[\pi^*_A,\pi^*_B]^T=[0.827,0.173]^T$
+\item[(b)] $[\pi^*_1,\pi^*_2]^T=[0.5,0.5]^T$\\
+$[\pi^*_3,\pi^*_4,\pi^*_5]^T=[0.416,0.168,0.416]^T$
+\item[(c)] The approximate $\pi^*$ calculated by the given equation is $[0.413, 0.413, 0.072, 0.029, 0.072]^T$.
+\smallskip\\
+The time complexity of this approximate method is less than that of the directly computing $\pi^*$. No matter if we use inversion or matrices or iterative method, expensive matrix operations like inversion or multiplication is involved. As the matrix dimension $n$ gets larger, computational load would increase exponentially. Splitting the whole matrix into smaller matrices would make computaiton less costly. In this case, updating each iteration would cost around $5^2=25$ multiplications for the original matrix. But once we use the approximation, only $3^2+2^2+2^2=17$ multiplications are needed.
+\end{itemize}
+
+
+\end{enumerate}
+\end{document}
+
+
+ 

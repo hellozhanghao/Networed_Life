@@ -13,29 +13,21 @@ vlStats = lib.getUsefulStats(validation)
 
 K = 5
 
-# mode = 'batch'
-mode = 'single'
+mode = 'batch'
+# mode = 'single'
+
+finalW = np.zeros([5,5,5])
+finalRMSE = 100
 
 def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
     # Initialise all our arrays
     W = rbm.getInitialWeights(trStats["n_movies"], F, K)
+    bestW = np.zeros(W.shape)
+    bestRMSE = 100
 
     posprods = np.zeros(W.shape)
     negprods = np.zeros(W.shape)
     grad = np.zeros(W.shape)
-
-    hiddenBiases = np.zeros([1, W.shape[1]])
-    visibleBiases = np.zeros([1, W.shape[0]])
-    hiddenBiasGrad = np.zeros([1, W.shape[1]])
-    visibleBiasGrad = np.zeros([1, W.shape[0]])
-
-    poshidact = np.zeros([1, W.shape[1]])
-    neghidact = np.zeros([1, W.shape[1]])
-    posvisact = np.zeros([1, W.shape[0]])
-    negvisact = np.zeros([1, W.shape[0]])
-
-    bestW = np.zeros(W.shape)
-    bestRMSE = 100
 
     for epoch in range(1, epochs):
         # in each epoch, we'll visit all users in a random order
@@ -52,15 +44,18 @@ def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
                 # build the visible input
                 v = rbm.getV(ratingsForUser)
                 # get the weights associated to movies the user has seen
-                weightsForUser = W[ratingsForUser[:, 0], :, :]
+                ratingsWithBias = np.append(ratingsForUser[:,0],W.shape[0]-1)
+                weightsForUser = W[ratingsWithBias, :, :]
                 ### LEARNING ###
                 # propagate visible input to hidden units
+
+
                 posHiddenProb = rbm.visibleToHiddenVec(v, weightsForUser)
+
                 # get positive gradient
                 # note that we only update the movies that this user has seen!
-                posprods[ratingsForUser[:, 0], :, :] += rbm.probProduct(v, posHiddenProb)
-                # poshidact = posHiddenProb.transpose()
-                # posvisact = np.sum(v,axis=0)
+                posprods[ratingsWithBias, :, :] += rbm.probProduct(v, posHiddenProb)
+
 
 
                 ### UNLEARNING ###
@@ -69,19 +64,18 @@ def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
                 # propagate back to get "negative data"
                 negData = rbm.hiddenToVisible(sampledHidden, weightsForUser)
                 # propagate negative data to hidden units
+                negData[-1,:] = np.array([1,1,1,1,1])
                 negHiddenProb = rbm.visibleToHiddenVec(negData, weightsForUser)
                 # get negative gradient
                 # note that we only update the movies that this user has seen!
-                negprods[ratingsForUser[:, 0], :, :] += rbm.probProduct(negData, negHiddenProb)
-                # neghidact = negHiddenProb.transpose()
-                # negvisact = np.sum(negData,axis=0)
+                negprods[ratingsWithBias, :, :] += rbm.probProduct(negData, negHiddenProb)
                 # we average over the number of users
-                gradientLearningRate = epsilon / epoch
+                delta = epsilon / epochs
+                gradientLearningRate = epsilon - epoch * delta
                 # print(gradientLearningRate)
                 grad = momentum * grad + (1 - momentum) * gradientLearningRate * (
-                    (posprods - negprods) / trStats['n_users'] - weightcost * np.linalg.norm(temp))
-                # hiddenBiasGrad = gradientLearningRate * (poshidact - neghidact) / trStats["n_users"]
-                # visibleBiasGrad = gradientLearningRate * (posvisact - negvisact) / trStats["n_users"]
+                    (posprods - negprods) / trStats['n_users'] - weightcost * np.linalg.norm(W))
+
                 temp += grad
                 # hiddenBiases += hiddenBiasGrad
                 # visibleBiases += visibleBiasGrad
@@ -101,37 +95,36 @@ def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
             bestRMSE = vlRMSE
             bestW = W
 
-        if mode == 'single':
-            print("### EPOCH %d ###" % epoch)
-            print("Learning rate = %f" % gradientLearningRate)
-            print("Training loss = %f" % trRMSE)
-            print("Validation loss = %f" % vlRMSE)
+        # if mode == 'single':
+        print("### EPOCH %d ###" % epoch)
+        print("Learning rate = %f" % gradientLearningRate)
+        print("Training loss = %f" % trRMSE)
+        print("Validation loss = %f" % vlRMSE)
 
         content_to_be_written = "" + str(F) + ", " + str(epoch) + ", " + str(epsilon) + ", " + str(B) + ", " + str(
             weightcost) + ", "
         content_to_be_written += str(momentum) + ", " + str(trRMSE) + ", " + str(vlRMSE) + '\n'
         f.write(content_to_be_written)
 
-    if mode == 'single':
-        np.save('best_weight.npy', bestW)
-        print(bestRMSE)
-    return W
+    # np.save('best_weight.npy', bestW)
+    print(bestRMSE)
+    return (bestW,bestRMSE)
 
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-F = 58
+F = 10
 epochs = 50
 epsilon = 0.01
 B = 5
 weightcost = 0.0004
 momentum = 0.5
 
-range_F = range(2,100,8)
-range_Epsilon = [0.01,0.0001]
-range_B = [5,10,20,25,50]
-range_weightcost = [0.0004]
-range_momentum = [0.2,0.5,0.8]
+range_F = [4,6,8,10,12,14]
+range_Epsilon = [0.01,0.02,0.005]
+range_B = [20,10]
+range_weightcost = [0.0005,0.001]
+range_momentum = [0.3,0.5]
 
 
 f = open("log.csv", 'w')
@@ -147,13 +140,16 @@ if mode == 'batch':
                 for weightcost in range_weightcost:
                     for momentum in range_momentum:
                         count += 1
-                        print("====== ", round(count/float(total/100),2),"% =====")
+                        print("====== ", round(count/float(total)*100,2),"% =====")
                         print("F:        ",F)
                         print("epsilon:  ",epsilon)
                         print("B:        ", B)
                         print("weightcost", weightcost)
                         print("momentum: ", momentum)
-                        run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode)
+                        results = run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode)
+                        if results[1] < finalRMSE:
+                            finalRMSE = results[1]
+                            finalW = results[0]
 
 if mode == 'single':
     run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode)
@@ -161,14 +157,14 @@ if mode == 'single':
 f.close()
 
 
-W = np.load("best_weight.npy")
+# W = np.load("best_weight.npy")
 
 ### END ###
 # This part you can write on your own
 # you could plot the evolution of the training and validation RMSEs for example
-predictedRatings = np.array([rbm.predictForUser(user, W, training) for user in trStats["u_users"]])
+predictedRatings = np.array([rbm.predictForUser(user, finalW, training) for user in trStats["u_users"]])
 
-print(predictedRatings.shape)
+# print(predictedRatings.shape)
 
 
 np.savetxt("predictedRatings.txt", predictedRatings)

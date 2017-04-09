@@ -26,6 +26,7 @@ def getV(ratingsForUser):
     ret = np.zeros((len(ratingsForUser), K))
     for i in range(len(ratingsForUser)):
         ret[i, ratingsForUser[i, 1] - 1] = 1.0
+    ret = np.append(ret,[[1,1,1,1,1]],axis=0)
     return ret
 
 
@@ -33,7 +34,7 @@ def getInitialWeights(m, F, K):
     # m is the number of visible units
     # F is the number of hidden units
     # K is the highest rating (fixed to 5 here)
-    return np.random.normal(0, 0.1, (m, F, K))
+    return np.random.normal(0, 0.1, (m+1, F+1, K))
 
 
 def sig(x):
@@ -52,14 +53,13 @@ def visibleToHiddenVec(v, w):
     # ret should be a vector of size F
     # v = np.array(v)
     # w = np.array(w)
-
     sum = np.zeros(w.shape[1])
     for k in range(v.shape[1]):
         W_k = w[:, :, k]
         V_k = v[:, k]
         sum += np.dot(W_k.transpose(), V_k)
-
-    return sig(sum)
+    result = sig(sum)
+    return result
 
 
 def hiddenToVisible(h, w):
@@ -99,7 +99,9 @@ def sample(p):
     # In other word we sample from a Bernouilli distribution with
     # parameter p_i to obtain ret_i
     samples = np.random.random(p.size)
-    return np.array(samples <= p, dtype=int)
+    result = np.array(samples <= p, dtype=int)
+    result[-1] = 1
+    return result
 
 
 def getPredictedDistribution(v, w, wq):
@@ -118,13 +120,6 @@ def getPredictedDistribution(v, w, wq):
     #       the distribution over the movie whose associated weights are wq
     # ret is a vector of size 5
 
-    # q = 0
-    # for i in range(w.shape[0]):
-    #     if np.equal(w[i,:,:], wq).all():
-    #         q = i
-    #         break
-
-
     # get the weights associated to movies the user has seen
     weightsForUser = w
 
@@ -142,7 +137,6 @@ def getPredictedDistribution(v, w, wq):
     # propagate back to get "negative data"
     # negData = hiddenToVisible(sampledHidden, weightsForUser)
     negData = hiddenToVisible(sampledHidden,ww)
-    # return negData[q,:]
     return negData[0]
 
 
@@ -181,7 +175,8 @@ def predictMovieForUser(q, user, W, training, predictType="exp"):
     # type can be "max" or "exp"
     ratingsForUser = lib.getRatingsForUser(user, training)
     v = getV(ratingsForUser)
-    ratingDistribution = getPredictedDistribution(v, W[ratingsForUser[:, 0], :, :], W[q,:,:]) #changed from w[q,:,:] to q
+    ratingsWithBias = np.append(ratingsForUser[:,0],W.shape[0]-1)
+    ratingDistribution = getPredictedDistribution(v, W[ratingsWithBias, :, :], W[q,:,:]) #changed from w[q,:,:] to q
     if predictType == "max":
         return predictRatingMax(ratingDistribution)
     else:
