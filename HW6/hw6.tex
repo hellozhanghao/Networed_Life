@@ -57,11 +57,11 @@ In System A, an $N_s$ equal to 122 can be achieved. In System B, the total $N_s$
 \item{} \textbf{Answer:}
 \medskip\\
 We can re-express $1/E[n,\rho]$ using formula (1):
-$$\dfrac{1}{E[n,\rho]}=\dfrac{e^\rho\sum_\rho^\infty\dfrac{x^ne^{-x}}{n!}dx}{\rho^n/n!}$$
+$$\dfrac{1}{E[n,\rho]}=\dfrac{e^\rho\int_\rho^\infty\dfrac{x^ne^{-x}}{n!}dx}{\rho^n/n!}$$
 Cancelling $n!$ and plugging in $t$, we get:
-$$\dfrac{1}{E[tn,t\rho]}=\dfrac{e^{t\rho}\sum_{t\rho}^\infty x^{tn}e^{-x}dx}{t\rho^{tn}}=\dfrac{\sum_{t\rho}^\infty x^{tn}e^{t\rho-x}dx}{t\rho^{tn}}$$
+$$\dfrac{1}{E[tn,t\rho]}=\dfrac{e^{t\rho}\int_{t\rho}^\infty x^{tn}e^{-x}dx}{(t\rho)^{tn}}=\dfrac{\int_{t\rho}^\infty x^{tn}e^{t\rho-x}dx}{(t\rho)^{tn}}$$
 Re-indexing the range of the summation, we get:
-$$\dfrac{1}{E[tn,t\rho]}=\dfrac{\sum_0^\infty(x+t\rho)^{tn}e{t\rho-x-t\rho}dx}{t\rho^{tn}}=\sum_0^\infty(\dfrac{x+t\rho}{t\rho})^{tn}e^{-x}$$
+$$\dfrac{1}{E[tn,t\rho]}=\dfrac{\int_0^\infty(x+t\rho)^{tn}e{t\rho-x-t\rho}dx}{(t\rho)^{tn}}=\int_0^\infty(\dfrac{x+t\rho}{t\rho})^{tn}e^{-x}$$
 Only the middle term $(\dfrac{x+t\rho}{t\rho})^{tn}$ contains $t$. So we only need to compare which term, $(x+t\rho)^{tn}$ or $(t\rho)^{tn}$ grows faster as $t$ gets large. It is obvious that given the same index, the nominator will increase faster than the denominator does. Therefore, $1/E[tn,t\rho]$ is increasing with $t$. As a result, it has been proven that the original function $E[tn,t\rho]$ is strictly decreasing in $t$.
 
 
