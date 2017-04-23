@@ -13,8 +13,8 @@ vlStats = lib.getUsefulStats(validation)
 
 K = 5
 
-mode = 'batch'
-# mode = 'single'
+# mode = 'batch'
+mode = 'single'
 
 finalW = np.zeros([5,5,5])
 finalRMSE = 100
@@ -107,18 +107,17 @@ def run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode):
         f.write(content_to_be_written)
 
     # np.save('best_weight.npy', bestW)
-    print(bestRMSE)
     return (bestW,bestRMSE)
 
 
 # SET PARAMETERS HERE!!!
 # number of hidden units
-F = 10
-epochs = 50
-epsilon = 0.01
-B = 5
-weightcost = 0.0004
-momentum = 0.5
+F = 7
+epochs = 2
+epsilon = 0.001
+B = 10
+weightcost = 0.001
+momentum = 0.3
 
 range_F = [4,6,8,10,12,14]
 range_Epsilon = [0.01,0.02,0.005]
@@ -152,19 +151,17 @@ if mode == 'batch':
                             finalW = results[0]
 
 if mode == 'single':
-    run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode)
+    finalW = run_RBM(F, epochs, epsilon, B, weightcost, momentum, f, mode)[0]
 
 f.close()
 
-
-# W = np.load("best_weight.npy")
 
 ### END ###
 # This part you can write on your own
 # you could plot the evolution of the training and validation RMSEs for example
 predictedRatings = np.array([rbm.predictForUser(user, finalW, training) for user in trStats["u_users"]])
 
-# print(predictedRatings.shape)
+print(predictedRatings.shape)
 
 
 np.savetxt("predictedRatings.txt", predictedRatings)

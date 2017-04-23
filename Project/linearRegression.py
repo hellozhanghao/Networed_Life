@@ -1,6 +1,7 @@
 import numpy as np
 import projectLib as lib
 from numpy.linalg import pinv
+import matplotlib.pyplot as plt
 # shape is movie,user,rating
 training = lib.getTrainingData()
 validation = lib.getValidationData()
@@ -39,7 +40,6 @@ c = getc(rBar, trStats["ratings"])
 
 # compute the estimator b
 def param(A, c):
-    # ???
     b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)), A.transpose()),c)
     return b
 
@@ -47,7 +47,6 @@ def param(A, c):
 # note: lambda is a Python keyword to define inline functions
 #       so avoid using it as a variable name!
 def param_reg(A, c, l):
-    # ???
     b = np.dot(np.dot(pinv(np.dot(A.transpose(), A)+l*np.identity(A.shape[1])), A.transpose()),c)
     return b
 
@@ -66,13 +65,38 @@ def predict(movies, users, rBar, b):
 #b = param(A, c)
 
 # Regularised version
-for i in range(11):
-    l = i*0.0001
-    b = param_reg(A, c, l)
+lambdaList = []
+rmseList = []
+bestLambda = 0
+bestRMSE = 100
+# for i in range(40,90):
+#     l = i*0.1
+#     b = param_reg(A, c, l)
 
-    trRMSE = lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"])
-    vlRMSE = lib.rmse(predict(vlStats["movies"], vlStats["users"], rBar, b), vlStats["ratings"])
+#     trRMSE = lib.rmse(predict(trStats["movies"], trStats["users"], rBar, b), trStats["ratings"])
+#     vlRMSE = lib.rmse(predict(vlStats["movies"], vlStats["users"], rBar, b), vlStats["ratings"])
 
-    print("Linear regression, l = %f" % l)
-    print("Training loss = %f" % trRMSE)
-    print("Validation loss = %f\n" % vlRMSE)
+#     lambdaList.append(l)
+#     rmseList.append(vlRMSE)
+
+#     if bestRMSE > vlRMSE:
+#         bestRMSE = vlRMSE
+#         bestLambda = l
+
+#     print("Linear regression, l = %f" % l)
+#     print("Training loss = %f" % trRMSE)
+#     print("Validation loss = %f\n" % vlRMSE)
+# print(bestRMSE, bestLambda)
+
+# plt.plot(lambdaList, rmseList)
+# plt.ylabel('Validation RMSE')
+# plt.xlabel('Lambda')
+# plt.xticks(np.arange(min(lambdaList), max(lambdaList)+1, 0.5))
+# plt.show()
+b = param_reg(A,c,6.7)
+results = []
+for i in trStats['u_users']:
+    results.append(predict(trStats['u_movies'],[i]*trStats['n_movies'],rBar,b))
+results = np.array(results)
+print(results.shape)
+np.savetxt("predictedRatings.txt", results)
