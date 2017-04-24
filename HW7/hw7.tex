@@ -1,0 +1,108 @@
+\documentclass[12pt]{article}
+\pagestyle{empty}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{amsmath}
+%\usepackage{cyrillic}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{bm}
+\usepackage{tikz}
+
+\thispagestyle{empty}
+
+\begin{document}
+\begin{center}
+\large\bf Networked Life: Homework 7
+\medskip\\
+Guo Ziqi - 1000905\\
+Zhao Juan - 1000918\\
+Zhang Hao - 1000899
+\end{center}
+
+\begin{enumerate}
+
+\item{} \textbf{Answer:}
+\begin{itemize}
+\item[(1)]
+Using Lagrange Multiplier method,
+$$L=\log (x_A)+\log (x_1)+\log (x_2) - \lambda_1(x_A+x_1-C) - \lambda_2(x_A+x_2-C)$$
+With constraints:\\
+$$\dfrac{1}{\lambda_1+\lambda_2}+\dfrac{1}{\lambda_1}=C, \dfrac{1}{\lambda_1+\lambda_2}+\dfrac{1}{\lambda_2}=C$$
+We can get $\lambda_1=\lambda_2$. Therefore, $\dfrac{1}{2\lambda}+\dfrac{1}{\lambda}=C$ and $\lambda=\dfrac{3}{2C}$, followed by $x_A=\dfrac{c}{3}$ and $x_1=x_2=\dfrac{2C}{3}$.
+
+\item[(2)]$$U(x)=a\arctan(bx)=\arctan(x)$$
+$$U_A'(x_A)=\lambda_1+\lambda_2=\dfrac{1}{x_A^2+1},U_1'(x_1)=\dfrac{1}{x_1^2+1}=\lambda_1,U_2'(x_2)=\dfrac{1}{x_2^2+1}=\lambda_2$$
+With the constraints that $x_A+x_1=C$ and $x_A+x_2=C$, solve the linear equations.
+We get $x_A=-C\pm \sqrt{2C^2-1}$. Since an allocation can only be non-negative, $x_A=\sqrt{2C^2-1}-C$. Then $x_1=x_2=C-x_A=2C-\sqrt{2C^2-1}$.
+
+\item[(3)] We need to maximize total utility, which equals to $x_A+x_1+x_2$. The constraints are $x_A+x_1=C$ and $x_A+x_2=C$. The solution is $x_1=x_2=C$, $x_A=0$.
+
+\item[(4)] Assuming the capacity of each link is still $C$.
+\medskip\\
+In allocation (1), $x_A=\dfrac{C}{n+1}$, $x_1=x_2=\dfrac{(n-1)C}{n+1}$. The allocation fo $A$ scales down according to the number of users $n$.\medskip\\
+In allocation (2), $x_A=\dfrac{-2C+\sqrt{4C^2-4(n-1)(-C^2+n-1)}}{2(n-1)}$.\medskip\\
+In allocation (3), $x_A=0$, and $x_1=x_2=...=x_n=C$.\medskip\\
+As there are varying definitions of fairness, all of the allocations can be considered fair. With log utility, the allocation is inversely related to how much capacity each user takes up. TCP allocation ensures integrity of data transmission. The third allocation that maximizes throughput, as unfair as it seems for user A, can still be considered fair from the ISP's standpoint.
+\end{itemize}
+
+\item{} \textbf{Answer:}
+Based on the graph, we identified the following events:\\
+\begin{itemize}
+\item \textbf{Slow-start}: cwind = 1, ssthreshold = 32
+\item \textbf{Reaching congestion avoidance}: 
+\begin{itemize}
+\item Before: cwind = 32, ssthreshold = 32
+\item After: cwind = 33, ssthreshold = 32
+\end{itemize}
+\item \textbf{Triple duplicate ACK}:
+\begin{itemize}
+\item Before: cwind = 42, ssthreshold = 32
+\item After: cwind = 21, ssthreshold = 21
+\end{itemize}
+\item \textbf{Timeout event}:
+\begin{itemize}
+\item Before: cwind = 26, ssthreshold = 21
+\item After: cwind = 1, ssthreshold = 13
+\end{itemize}
+\end{itemize}
+
+\item{} \textbf{Answer:}
+\begin{itemize}
+\item[(1)] Because $BDP = BW\times RTT_d$ so $BDP$ corresponds to the maximum amount of bits allowed in the channel. If the window size does not reach $BDP$, the capacity is underutilized.\\
+\item[(2)] Yes. Yes. Yes. It serves as a physical constraint to the link.\\
+\item[(3)] Yes.\\
+\item[(4)] $BDP=BW\times RTT_d=10Mbps\times 2ms=20000\; bits=2500\; bytes = 2500/1460 \;packets = 2\;packets$. Because $2<44$, TCP is constrained by BDP. Maximum rate is 2, which takes $1\;RTT_d=2ms$ to reach.\\
+\item[(5)] $BDP=BW\times RTT_d=10Gbps\times 20ms=2\times10^8\; bits=25\; MB = 25M/1460 \;packets = 17123\;packets$. Because $17123>44$, TCP is constrained by BDP. Maximum rate is 44, which takes $43\;RTT_d=860ms=0.86s$ to reach.\\
+\item[(6)] Since TCP is only constrained by BDP, the maximum rate is 17123, which takes $17122\;RTT_d=342440ms=342s$ to achieve. The main issue is that it takes too long to reach the maximum rate.\\
+\item[(7)] $\log_2(17123)=14.06$. Taking the ceiling of $14.06$, it takes 15 $RTT_d$ to reach the maximum rate, which is $15\times 20ms=300ms=0.3s$.\\
+\item[(8)] $20\;Mbytes=20M/1460\;packets=13699\;packets$.\\
+Using the TCP in (7), we can solve $\int_{0}^{x}2^tdt=\dfrac{2^x}{\ln(2)}-\dfrac{1}{\ln(2)}=13699$. We get $x=13.213\;RTT_d=264ms$.\\
+If we use 100\% of the 10Gbps link directly, time needed is $\dfrac{20\;Mbytes}{10\;Gbps}=\dfrac{1.6\times10^8\;bits}{10\times10^9\;bits}=16ms$. It takes significantly shorter time to transmit through 10Gbps link directly.
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{enumerate}
+\end{document}
+
+
+ 

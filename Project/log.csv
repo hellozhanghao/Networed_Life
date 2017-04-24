@@ -1,2 +1,0 @@
-F, epochs, epsilon, B, weightcost, momentum, trRSME, vlRSME
-7, 1, 0.001, 10, 0.001, 0.3, 1.17688807164, 1.21608581808
